@@ -12,12 +12,9 @@ const PORT = process.env.PORT || 4000;
 // Loading environment variables from .env file
 dotenv.config();
 
-// Connecting to database
-database.connect();
- 
 // Middlewares
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:4000",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
@@ -44,9 +41,16 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Listening to the server
+// Start the server first
 app.listen(PORT, () => {
 	console.log(`App is listening at ${PORT}`);
+	// Try to connect to database after server starts
+	try {
+		database.connect();
+	} catch (error) {
+		console.error("Database connection failed:", error);
+		// Server will continue running even if database connection fails
+	}
 });
 
 // End of code.
