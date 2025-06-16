@@ -24,6 +24,7 @@ function App() {
     setIsLoading(true);
     
     try {
+      console.log('Submitting form data:', formData);
       const response = await axios.post(
         "http://localhost:4000/anydesk/banking/promotion/create",
         formData,
@@ -35,6 +36,8 @@ function App() {
         }
       );
 
+      console.log('Server response:', response.data);
+
       if (response.data.success) {
         toast.success("Record created successfully!");
         setTableData([...tableData, response.data.data]);
@@ -43,7 +46,11 @@ function App() {
         toast.error(response.data.message || "Something went wrong!");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
       toast.error(error.response?.data?.message || "Something went wrong!");
     } finally {
       setIsLoading(false);
