@@ -7,7 +7,7 @@ const dotenv = require("dotenv");
 const promotionRoutes = require("./routes/promotionRoutes");    
 
 // Setting up port number
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4001;
 
 // Loading environment variables from .env file
 dotenv.config();
