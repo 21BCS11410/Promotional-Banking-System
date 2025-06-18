@@ -1,33 +1,81 @@
-# React & Tailwind CSS Starter Pack
+# Promotional Banking System
 
-This is a starter pack for creating React projects with Tailwind CSS configured. It uses React version **18.2** and Tailwind CSS version **3.2**.
+A React-based banking promotion system with a Node.js backend that manages account relationships and promotional benefits.
 
-## Usage
+## Features
 
-This starter pack includes a basic setup for using **Tailwind CSS with React**. To start building your own components and styles, follow these steps:
+- ✅ Create new account entries with introducer relationships
+- ✅ Automatic beneficiary calculation based on account number (odd/even)
+- ✅ Delete account entries and their related introducer entries
+- ✅ Real-time table updates with delete functionality
+- ✅ Modern UI with Tailwind CSS
+
+## Tech Stack
+
+- **Frontend**: React 18.2, Tailwind CSS 3.2, Axios, React Icons
+- **Backend**: Node.js, Express.js, MongoDB, Mongoose
+- **Development**: React Hot Toast for notifications
+
+## Getting Started
 
 1. Clone the repository to your local machine.
     ```sh
-    git clone https://github.com/thepranaygupta/react-tailwind-css-starter-pack.git
+    git clone <repository-url>
     ```
 
-1. Install the required packages.
+2. Install the required packages.
     ```sh
-    cd react-tailwind-css-starter-pack
     npm install
     ```
 
-1. Start the development server.
+3. Set up environment variables:
+   - Create `.env` in root directory: `PORT=3001`
+   - Create `server/.env`: `PORT=5000` and `MONGODB_URL=your_mongodb_connection_string`
+
+4. Start the backend server.
+    ```sh
+    cd server
+    npm start
+    ```
+
+5. Start the frontend development server.
     ```sh
     npm start
     ```
-1. Open the project in your browser at [`http://localhost:3000`](http://localhost:3000) to view your project.
-1. Create your React components and add your styles using Tailwind classes. You can also create new CSS files and import them into your components.
 
-### Endpoint
-- **API Endpoint**: `http://localhost:4000/anydesk/banking/promotion/create`
+6. Open the project in your browser at [`http://localhost:3001`](http://localhost:3001)
 
-The project is set up to use `postcss-cli` to process your CSS files. You can add your own `tailwind.config.js` file to customize your Tailwind setup.
+## API Endpoints
+
+### Create Promotion Entry
+- **Method**: `POST`
+- **URL**: `http://localhost:5000/anydesk/banking/promotion/create`
+- **Body**:
+  ```json
+  {
+    "accountNumber": "12345",
+    "introducer": "67890"
+  }
+  ```
+- **Response**: Returns created promotion record with calculated beneficiary
+
+### Delete Promotion Entry
+- **Method**: `DELETE`
+- **URL**: `http://localhost:5000/anydesk/banking/promotion/delete`
+- **Body**:
+  ```json
+  {
+    "accountNumber": "12345"
+  }
+  ```
+- **Response**: Deletes the account and all entries where this account is the introducer
+
+## Business Logic
+
+- **Odd Account Numbers**: Beneficiary = Introducer
+- **Even Account Numbers**: Beneficiary = Introducer's beneficiary (inherits from introducer)
+- **Default Introducer**: Use "0" for accounts without an introducer
+- **Cascade Delete**: Deleting an account also removes all accounts that have it as an introducer
 
 ## Contributing
 

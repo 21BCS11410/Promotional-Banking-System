@@ -7,14 +7,14 @@ const dotenv = require("dotenv");
 const promotionRoutes = require("./routes/promotionRoutes");    
 
 // Setting up port number
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 5000;
 
 // Loading environment variables from .env file
 dotenv.config();
 
 // Middlewares
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3001",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));

@@ -103,6 +103,67 @@ const handlePromotion = async (req, res) => {
     }
 };
 
+const deletePromotion = async (req, res) => {
+    try {
+        const { accountNumber } = req.body;
+
+        // Validate input
+        if (!accountNumber) {
+            return res.status(400).json({
+                success: false,
+                message: 'Account number is required'
+            });
+        }
+
+        // Check if account number is negative
+        // if (parseInt(accountNumber) < 0) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: 'Account number cannot be negative'
+        //     });
+        // }
+
+        // Check if the account exists
+        const existingAccount = await PromotionData.findOne({ accountNumber });
+        if (!existingAccount) {
+            return res.status(404).json({
+                success: false,
+                message: 'Account not found'
+            });
+        }
+
+        // Delete the main account entry
+        const deletedAccount = await PromotionData.findOneAndDelete({ accountNumber });
+        
+        // Delete all entries where this account number is the introducer
+        const deletedIntroducerEntries = await PromotionData.deleteMany({ introducer: accountNumber });
+
+        console.log('Delete operation completed:', {
+            deletedAccount: deletedAccount ? deletedAccount.accountNumber : null,
+            deletedIntroducerEntries: deletedIntroducerEntries.deletedCount
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Account and related entries deleted successfully',
+            data: {
+                deletedAccount: deletedAccount,
+                deletedIntroducerEntriesCount: deletedIntroducerEntries.deletedCount
+            }
+        });
+
+    } catch (error) {
+        console.error('Error in deletePromotion:', error);
+        
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
-    handlePromotion
+    handlePromotion,
+    deletePromotion
 }; 

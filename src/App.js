@@ -3,8 +3,10 @@ import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { FaTrash } from "react-icons/fa";
 
 function App() {
+  
   const [formData, setFormData] = useState({
     accountNumber: "",
     introducer: ""
@@ -26,7 +28,7 @@ function App() {
     try {
       console.log('Submitting form data:', formData);
       const response = await axios.post(
-        "http://localhost:4000/anydesk/banking/promotion/create",
+        "http://localhost:5000/anydesk/banking/promotion/create",
         formData,
         {
           headers: {
@@ -54,6 +56,32 @@ function App() {
       toast.error(error.response?.data?.message || "Something went wrong!");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (accountNumber) => {
+    try {
+      const response = await axios.delete(
+        "http://localhost:5000/anydesk/banking/promotion/delete",
+        {
+          data: { accountNumber },
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Record deleted successfully!");
+        // Remove the deleted item from table data
+        setTableData(tableData.filter(item => item.accountNumber !== accountNumber && item.introducer !== accountNumber));
+      } else {
+        toast.error(response.data.message || "Failed to delete record!");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error(error.response?.data?.message || "Failed to delete record!");
     }
   };
 
@@ -122,6 +150,9 @@ function App() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Beneficiary
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -135,6 +166,17 @@ function App() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {item.beneficiary}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleDelete(item.accountNumber);
+                            }}
+                            className="text-red-600 hover:text-red-900 mr-2"
+                          >
+                            <FaTrash />
+                          </button>
                         </td>
                       </tr>
                     ))}
