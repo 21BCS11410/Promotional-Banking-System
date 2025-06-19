@@ -12,13 +12,13 @@ const handlePromotion = async (req, res) => {
             });
         }
 
-        // Check if account number is negative
-        if (parseInt(accountNumber) < 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Account number cannot be negative'
-            });
-        }
+        // // Check if account number is negative
+        // if (parseInt(accountNumber) < 0) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: 'Account number cannot be negative'
+        //     });
+        // }
 
         // Check if account number already exists
         const existingAccount = await PromotionData.findOne({ accountNumber });
@@ -26,6 +26,13 @@ const handlePromotion = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: 'Account number already exists'
+            });
+        }
+
+        if(parseInt(accountNumber) < parseInt(introducer)){
+            return res.status(400).json({
+                success: false,
+                message: 'Account number cannot be less than introducer'
             });
         }
 
